@@ -8,3 +8,5 @@ install new modpack (precise config needed for now, add to library), acquire alr
 
 If you discover any glitch, give it into the issues !
 I'll respond to you as fastest as possible.
+
+Ah, to run this program, run the file "run.bat"
