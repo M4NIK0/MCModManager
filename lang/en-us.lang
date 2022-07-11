@@ -1,0 +1,43 @@
+langName|English (US)
+file|File
+import|Import...
+export|Export...
+backup|Backup...
+save|Save
+saveAs|Save as...
+listPacks|List packs
+exit|Exit
+newPack|New pack
+deletePack|Discard pack
+languages|Language
+packsLocation|Packs locations
+packsBackupsLocation|Backup packs location
+settings|Settings
+MC_MM|MC Mod Manager
+new|New
+locationOptionPacks|Packs location:
+locationOptionBackups|Backups location:
+browseText|Browse...
+settingsWindow|Settings
+mainWindow|Minecraft Mod Manager
+cancelButton|Cancel
+applyButton|Apply
+pathHelpOptions|Leave empty to reset to default location
+pathFolder|Select folder...
+packLoadButton|Load
+packDeleteButton|Delete
+packDisplayModsButton|Display mods
+packInstalledMods|Installed Mods
+packLoader|Loader
+packSureDelete|Are you sure you want to delete the pack
+yes|Yes
+no|No
+packSaveWindowName|Save pack from .minecraft
+packSaveName|Name
+packSaveVersion|Version
+packSaveMods|Mods
+packSaveOptions|Options
+packSaveOptionsIndication|Separate all items by "," in all text boxes.
+packSaveSaveButton|Save
+packSaveUnknownversion|Unknown version
+packSaveUnknownMods|No mods list avalible
