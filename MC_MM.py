@@ -1,4 +1,4 @@
-import sys, random, os, shutil, time
+import sys, random, os, shutil, time, requests
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFrame, QLabel, QHBoxLayout, QVBoxLayout, QSlider, QGridLayout, QToolBar, QPushButton, QAction, QCheckBox, QStatusBar, QWidget, QFileDialog, QToolBar, QMessageBox, QLineEdit, QComboBox, QScrollArea
 from PyQt5.QtCore import Qt, QCoreApplication, QRect, QSize
 from PyQt5.QtGui import QIcon, QKeySequence
@@ -213,6 +213,7 @@ class mainWindow(QMainWindow):
         self.selectedLanguage = ''
         self.settingsToApply = []
         self.MCMMPath = ''
+        self.version = ''
 
 
     def continueLoad(self):
@@ -259,6 +260,8 @@ class mainWindow(QMainWindow):
         self.packsFrame.width = self.width
         self.packScrolling.setWidget(self.packsFrame)
         self.setCentralWidget(self.packScrolling)
+
+        self.onUpdate()
 
     def onSave(self):
         def onSaveApply():
@@ -618,6 +621,87 @@ class mainWindow(QMainWindow):
 
     def onUpdate(self):
         print('onUpdate')
+        def onSkipUpdate():
+            print('onSkipUpdate')
+            updateSkippedFile = open(self.MCMMPath + '\\skipUpdate', 'w')
+            updateSkippedFile.write(self.responceVersion)
+            updateSkippedFile.close()
+            self.updateWindow.close()
+    
+        def onCancelUpdate():
+            print('Update canceled !')
+            self.updateWindow.close()
+
+        def onDownloadUpdate():
+            print('onDownloadUpdate')
+            print('Downloading update...')
+            updateData = requests.get('https://github.com/M4NIK0/MCModManager/releases/download/' + self.responceVersion + '/MCMM.' + self.responceVersion + '.zip')
+            updateFile = open(self.MCMMPath + '\\WorkDir\\Update.zip', "wb").write(updateData.content)
+            print('Downloaded successfuly !\nDecompressing update file...')
+            if not os.path.exists(self.MCMMPath + '\\WorkDir\\Update'):
+                os.mkdir(self.MCMMPath + '\\WorkDir\\Update')
+            shutil.unpack_archive(self.MCMMPath + '\\WorkDir\\Update.zip', self.MCMMPath + '\\WorkDir\\Update')
+            print('Decompression successful !')
+            print('Running update scipt...')
+            self.close()
+            self.updateWindow.close()
+            os.system('python ' + self.MCMMPath + '\\WorkDir\\Update\\Update.py')
+
+
+
+        response = requests.get("https://api.github.com/repos/M4NIK0/MCModManager/releases/latest")
+        self.responceVersion = response.json()["name"]
+        if self.responceVersion != 'v' + self.version:
+            print('Update found !')
+            updateSkip = False
+            if not os.path.exists(self.MCMMPath + '\\skipUpdate'):
+                updateSkip = False
+            else:
+                updateSkippedFile = open(self.MCMMPath + '\\skipUpdate', 'r')
+                updateSkipped = updateSkippedFile.read().replace('\n', '')
+                updateSkippedFile.close()
+                if self.responceVersion == updateSkipped:
+                    updateSkip = True
+                    print('Update skipped !')
+            if not updateSkip:
+                self.updateWindow = QFrame()
+                updateLabel = QLabel()
+                updateWindowLayout = QVBoxLayout()
+                updateButtonsLayout = QHBoxLayout()
+                updateButtonsFrame = QFrame()
+                downloadButton = QPushButton()
+                cancelButton = QPushButton()
+                skipButton = QPushButton()
+                updateLabel.setText(self.langData['updateTitle'])
+                downloadButton.setText(self.langData['updateDownload'])
+                cancelButton.setText(self.langData['updateCancel'])
+                skipButton.setText(self.langData['updateSkip'])
+
+                downloadButton.clicked.connect(onDownloadUpdate)
+                cancelButton.clicked.connect(onCancelUpdate)
+                skipButton.clicked.connect(onSkipUpdate)
+
+                updateButtonsLayout.addWidget(downloadButton)
+                updateButtonsLayout.addWidget(skipButton)
+                updateButtonsLayout.addWidget(cancelButton)
+
+                updateButtonsFrame.setLayout(updateButtonsLayout)
+
+                updateWindowLayout.addWidget(updateLabel)
+                updateWindowLayout.addWidget(updateButtonsFrame)
+
+                self.updateWindow.setLayout(updateWindowLayout)
+
+                self.updateWindow.setWindowModality(Qt.ApplicationModal)
+
+                self.updateWindow.show()
+                
+            def onDownload(self):
+                print('onDownloadUpdate')
+            
+            def onSkip(self):
+                print('onSkipUpdate')
+
 
     def onExit(self):
         print('onExit')
@@ -689,7 +773,7 @@ if app is None:
     app = QApplication(sys.argv)
     
 test = mainWindow()
-test.langData, test.settingsData, test.langList, test.selectedLanguage, test.MCMMPath = langDic, optionsDic, langList, optionsDic['lang'], runLocation
+test.langData, test.settingsData, test.langList, test.selectedLanguage, test.MCMMPath, test.version = langDic, optionsDic, langList, optionsDic['lang'], runLocation, version
 test.continueLoad()
 test.show()
 app.exec()

@@ -41,3 +41,8 @@ packSaveOptionsIndication|Separate all items by "," in all text boxes.
 packSaveSaveButton|Save
 packSaveUnknownversion|Unknown version
 packSaveUnknownMods|No mods list avalible
+updateTitle|New update avalible !
+updateSkip|Skip this update
+updateDisable|Disable updates
+updateDownload|Download
+updateCancel|Cancel
