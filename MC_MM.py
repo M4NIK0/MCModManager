@@ -538,6 +538,10 @@ class mainWindow(QMainWindow):
 
         self.settingsPopup.layout.addWidget(mainButtonsFrame)
 
+        self.textTest = QLabel()
+        self.textTest.setText(self.langData['testForUpdate'])
+        self.settingsPopup.layout.addWidget(self.textTest)
+
         settingsPopupMainFrame.setLayout(self.settingsPopup.layout) #Define all layout to settings window
         self.settingsPopup.setCentralWidget(settingsPopupMainFrame)
 

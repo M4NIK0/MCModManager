@@ -46,3 +46,4 @@ updateSkip|Skip this update
 updateDisable|Disable updates
 updateDownload|Download
 updateCancel|Cancel
+testForUpdate|This text is only there to test the update system
