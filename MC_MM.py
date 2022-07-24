@@ -217,6 +217,10 @@ class mainWindow(QMainWindow):
 
 
     def continueLoad(self):
+        if os.path.exists(self.MCMMPath + '\\Update.py'):
+            os.remove(self.MCMMPath + '\\Update.py')
+            print('Removed Update.py (it\'s not an update running !)')
+
         self.setWindowTitle(self.langData['mainWindow'])
         self.resize(1024, 600)
         self.layout = QHBoxLayout()
@@ -775,7 +779,7 @@ app = QCoreApplication.instance()
 
 if app is None:
     app = QApplication(sys.argv)
-    
+
 test = mainWindow()
 test.langData, test.settingsData, test.langList, test.selectedLanguage, test.MCMMPath, test.version = langDic, optionsDic, langList, optionsDic['lang'], runLocation, version
 test.continueLoad()
