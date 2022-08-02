@@ -1,4 +1,5 @@
 lang = en-us
 packLocation = MC_MM_Install\Packs
 backupLocation = MC_MM_Install\Backups
+checkForUpdates = True
 username = user

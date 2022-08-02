@@ -29,21 +29,28 @@ packDeleteButton|Delete
 packDisplayModsButton|Display mods
 packInstalledMods|Installed Mods
 packLoader|Loader
-packSureDelete|Are you sure you want to delete the pack
+packSureDelete|Are you sure you want to delete the pack ?
+packDeleteWindowTitle|Sure ?
 yes|Yes
 no|No
 packSaveWindowName|Save pack from .minecraft
 packSaveName|Name
-packSaveVersion|Version
+packSaveVersion|Minecraft version
 packSaveMods|Mods
 packSaveOptions|Options
 packSaveOptionsIndication|Separate all items by "," in all text boxes.
 packSaveSaveButton|Save
 packSaveUnknownversion|Unknown version
 packSaveUnknownMods|No mods list avalible
+packUnknownLoader|Unknown loader
+packSaveLoader|Loader
 updateTitle|New update avalible !
 updateSkip|Skip this update
 updateDisable|Disable updates
 updateDownload|Download
 updateCancel|Cancel
-testForUpdate|This text is only there to test the update system
+updateAutoSettings|Check updates at start
+updateCheckSettings|Check for updates
+updateWindowTitle|Updater
+updateNotFound|No update found !
+okayButton|Okay

@@ -17,6 +17,7 @@ class packFrame(QFrame):
         self.backupPath = ''
         self.MCMMPath = ''
         self.settingsData = {}
+        self.langData = {}
 
     def createContent(self):
         print('onCreateContent ' + self.name)
@@ -124,6 +125,11 @@ class packFrame(QFrame):
         self.deletePopup.setLayout(deletePopupLayoutButtons)
 
         self.deletePopup.setWindowModality(Qt.ApplicationModal)
+        self.deletePopup.setWindowTitle(self.langData['packDeleteWindowTitle'])
+        self.deletePopup.setMaximumHeight(50)
+        self.deletePopup.setMaximumWidth(400)
+        self.deletePopup.setMinimumHeight(50)
+        self.deletePopup.setMinimumWidth(400)
         self.deletePopup.show()
 
     def onLoad(self):
@@ -158,6 +164,7 @@ class packFrame(QFrame):
         self.modListFrame.setLayout(modListFrameLayout)
         self.scrollModsArea.setWidget(self.modListFrame)
         self.scrollModsArea.setWindowTitle(self.text[4])
+        self.scrollModsArea.setWindowModality(Qt.ApplicationModal)
         self.scrollModsArea.show()
 
 class packList(QFrame):
@@ -184,6 +191,7 @@ class packList(QFrame):
                     packRawData[j] = packRawData[j].replace('\n', '').split('|')
                     dicData[packRawData[j][0]] = packRawData[j][1]
                 packFramed = packFrame()
+                packFramed.langData = self.langData
                 packFramed.name = packList[i]
                 packFramed.loader = dicData['Loader']
                 packFramed.mods = dicData['ModsList'].split(',')
@@ -220,6 +228,9 @@ class mainWindow(QMainWindow):
         if os.path.exists(self.MCMMPath + '\\Update.py'):
             os.remove(self.MCMMPath + '\\Update.py')
             print('Removed Update.py (it\'s not an update running !)')
+
+        self.settingsPopup = QMainWindow() #Creating settings window
+        self.settingsPopup.setWindowTitle(self.langData['settingsWindow'])
 
         self.setWindowTitle(self.langData['mainWindow'])
         self.resize(1024, 600)
@@ -271,6 +282,7 @@ class mainWindow(QMainWindow):
         def onSaveApply():
             packName = self.nameText.text()
             packVersion = self.versionText.text()
+            packLoader = self.loaderText.text()
             modsList = self.modsText.text()
             optionsGet = self.optionsCheckBox.checkState()
             optionsofGet = self.optionsofCheckBox.checkState()
@@ -303,6 +315,8 @@ class mainWindow(QMainWindow):
                     packVersion = self.langData['packSaveUnknownversion']
                 if modsList == '':
                     modsList = self.langData['packSaveUnknownMods']
+                if packLoader == '':
+                    packLoader = self.langData['packUnknownLoader']
 
                 infoWrite = 'OptionsList|'
                 if optionsGet:
@@ -311,7 +325,7 @@ class mainWindow(QMainWindow):
                     infoWrite += 'optionsof,'
                 if optionsshadersGet:
                     infoWrite += 'optionsshaders,'
-                infoWrite += optionsMore + '\nModsList|' + modsList + '\nLoader|Unavalible\nMCVersion|' + packVersion + '\nCreationDate|' + str(time.strftime('%d %b %Y %H:%M:%S'))
+                infoWrite += optionsMore + '\nModsList|' + modsList + '\nLoader|' + packLoader + '\nMCVersion|' + packVersion + '\nCreationDate|' + str(time.strftime('%d %b %Y %H:%M:%S'))
     
                 os.mkdir(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + packName)
                 
@@ -382,6 +396,7 @@ class mainWindow(QMainWindow):
 
         self.nameText = QLineEdit()
         self.versionText = QLineEdit()
+        self.loaderText = QLineEdit()
         self.optionsText = QLineEdit()
         self.modsText = QLineEdit()
         self.hintTextsLabel = QLabel()
@@ -393,6 +408,7 @@ class mainWindow(QMainWindow):
 
         self.optionsEditLayout.addWidget(self.nameText)
         self.optionsEditLayout.addWidget(self.versionText)
+        self.optionsEditLayout.addWidget(self.loaderText)
         self.optionsEditLayout.addWidget(self.modsText)
         self.optionsEditLayout.addWidget(self.optionsFrame)
         self.optionsEditLayout.addWidget(self.optionsText)
@@ -406,6 +422,7 @@ class mainWindow(QMainWindow):
         
         self.nameLabel = QLabel()
         self.versionLabel = QLabel()
+        self.loaderLabel = QLabel()
         self.modsLabel = QLabel()
         self.optionsLabel = QLabel()
         self.emptyLabel = QLabel()
@@ -413,6 +430,7 @@ class mainWindow(QMainWindow):
 
         self.nameLabel.setText(self.langData['packSaveName'])
         self.versionLabel.setText(self.langData['packSaveVersion'])
+        self.loaderLabel.setText(self.langData['packSaveLoader'])
         self.modsLabel.setText(self.langData['packSaveMods'])
         self.optionsLabel.setText(self.langData['packSaveOptions'])
         self.saveButton.setText(self.langData['packSaveSaveButton'])
@@ -421,6 +439,7 @@ class mainWindow(QMainWindow):
 
         self.labelsLayout.addWidget(self.nameLabel)
         self.labelsLayout.addWidget(self.versionLabel)
+        self.labelsLayout.addWidget(self.loaderLabel)
         self.labelsLayout.addWidget(self.modsLabel)
         self.labelsLayout.addWidget(self.optionsLabel)
         self.labelsLayout.addWidget(self.emptyLabel)
@@ -435,21 +454,21 @@ class mainWindow(QMainWindow):
 
         self.savePopup.setLayout(self.savePopupLayout)
 
-        self.savePopup.setMinimumSize(400,200)
-        self.savePopup.setMaximumSize(400,200)
+        self.savePopup.setMinimumSize(400,220)
+        self.savePopup.setMaximumSize(400,220)
 
+        self.savePopup.setWindowModality(Qt.ApplicationModal)
         self.savePopup.show()
+        
 
         
 
     def onSettings(self):
         print('onSettings')
-        self.settingsPopup = QMainWindow()
-        self.settingsPopup.setWindowTitle(self.langData['settingsWindow'])
         settingsPopupMainFrame = QFrame()
-        self.settingsPopup.resize(500, 210)
-        self.settingsPopup.setMaximumSize(500, 210)
-        self.settingsPopup.setMinimumSize(500, 210)
+        self.settingsPopup.resize(500, 260)
+        self.settingsPopup.setMaximumSize(500, 260)
+        self.settingsPopup.setMinimumSize(500, 260)
 
         self.settingsPopup.layout = QVBoxLayout()
 
@@ -515,6 +534,7 @@ class mainWindow(QMainWindow):
         frameLanguage.layout = QHBoxLayout()
 
         labelLanguage.setText(self.langData['languages'])
+        print(self.settingsData)
 
         frameLanguage.layout.addWidget(labelLanguage)
         frameLanguage.layout.addWidget(self.dropdownLanguage)
@@ -523,6 +543,27 @@ class mainWindow(QMainWindow):
 
         self.settingsPopup.layout.addWidget(frameLanguage)
 
+        updateFrame = QFrame()
+        updateFrameLayout = QHBoxLayout()
+
+        updateStartupLabel = QLabel()
+        updateStartupLabel.setText(self.langData['updateAutoSettings'])
+        self.updateCheckBox = QCheckBox()
+        if self.settingsData['checkForUpdates'] == 'True':
+            self.updateCheckBox.setChecked(True)
+        updateCheckButton = QPushButton()
+        updateCheckButton.setText(self.langData['updateCheckSettings'])
+
+        updateFrameLayout.addWidget(updateStartupLabel)
+        updateFrameLayout.addWidget(self.updateCheckBox)
+        updateFrameLayout.addWidget(updateCheckButton)
+
+        updateCheckButton.clicked.connect(self.onUpdateFromSettings)
+
+        updateFrame.setLayout(updateFrameLayout)
+
+        self.settingsPopup.layout.addWidget(updateFrame)
+        
         cancelButton = QPushButton()
         applyButton = QPushButton()
 
@@ -539,12 +580,8 @@ class mainWindow(QMainWindow):
         mainButtonsFrame.layout.addWidget(applyButton)
 
         mainButtonsFrame.setLayout(mainButtonsFrame.layout)
-
+        
         self.settingsPopup.layout.addWidget(mainButtonsFrame)
-
-        self.textTest = QLabel()
-        self.textTest.setText(self.langData['testForUpdate'])
-        self.settingsPopup.layout.addWidget(self.textTest)
 
         settingsPopupMainFrame.setLayout(self.settingsPopup.layout) #Define all layout to settings window
         self.settingsPopup.setCentralWidget(settingsPopupMainFrame)
@@ -552,7 +589,8 @@ class mainWindow(QMainWindow):
         self.settingsPopup.setWindowModality(Qt.ApplicationModal)
 
         self.settingsPopup.show()
-
+    
+    
     def onCancelSettings(self):
         print('onCancelSettings')
         self.settingsPopup.close()
@@ -562,7 +600,7 @@ class mainWindow(QMainWindow):
         print(self.locationBackupsTextZone.text())
         print(self.locationPacksTextZone.text())
         print(self.langList[self.dropdownLanguage.currentIndex()])
-        optionsList = [self.langList[self.dropdownLanguage.currentIndex()], self.locationPacksTextZone.text(), self.locationBackupsTextZone.text()]
+        optionsList = [self.langList[self.dropdownLanguage.currentIndex()], self.locationPacksTextZone.text(), self.locationBackupsTextZone.text(), self.updateCheckBox.checkState()]
         if optionsList[1] == '':
             optionsList[1] = 'MC_MM_Install\\Packs'
         if optionsList[2] == '':
@@ -580,8 +618,14 @@ class mainWindow(QMainWindow):
             optionsList[1] = self.settingsData['packLocation']
             optionsList[2] = self.settingsData['backupLocation']
 
+        optionsList[3] = str(optionsList[3])
+        if optionsList[3] == '2':
+            optionsList[3] = 'True'
+        elif optionsList[3] == '0':
+            optionsList[3] = 'False'
+
         optionsToWrite = ''
-        optionsValsList = ['lang = ', 'packLocation = ', 'backupLocation = ', 'username = ']
+        optionsValsList = ['lang = ', 'packLocation = ', 'backupLocation = ', 'checkForUpdates = ']
         for i in range(len(optionsList)):
             optionsToWrite += optionsValsList[i] + optionsList[i] + "\n"
         optionsToWrite += 'username = user'
@@ -592,8 +636,9 @@ class mainWindow(QMainWindow):
         self.settingsData['lang'] = optionsList[0]
         self.settingsData['packLocation'] = optionsList[1]
         self.settingsData['backupLocation'] = optionsList[2]
+        self.settingsData['checkForUpdates'] = optionsList[3]
         print('Saved settings')
-        self.onCancelSettings()
+        self.settingsPopup.close()
 
     def onLanguageChange(self):
         print('onLanguageChange')
@@ -651,11 +696,10 @@ class mainWindow(QMainWindow):
             shutil.unpack_archive(self.MCMMPath + '\\WorkDir\\Update.zip', self.MCMMPath + '\\WorkDir\\Update')
             print('Decompression successful !')
             print('Running update scipt...')
+            self.settingsPopup.close()
             self.close()
             self.updateWindow.close()
             os.system('python ' + self.MCMMPath + '\\WorkDir\\Update\\Update.py')
-
-
 
         response = requests.get("https://api.github.com/repos/M4NIK0/MCModManager/releases/latest")
         self.responceVersion = response.json()["name"]
@@ -671,7 +715,85 @@ class mainWindow(QMainWindow):
                 if self.responceVersion == updateSkipped:
                     updateSkip = True
                     print('Update skipped !')
-            if not updateSkip:
+            if (not updateSkip) and ('True' in self.settingsData['checkForUpdates']):
+                self.updateWindow = QFrame()
+                updateLabel = QLabel()
+                updateWindowLayout = QVBoxLayout()
+                updateButtonsLayout = QHBoxLayout()
+                updateButtonsFrame = QFrame()
+                downloadButton = QPushButton()
+                cancelButton = QPushButton()
+                skipButton = QPushButton()
+                updateLabel.setText(self.langData['updateTitle'])
+                downloadButton.setText(self.langData['updateDownload'])
+                cancelButton.setText(self.langData['updateCancel'])
+                skipButton.setText(self.langData['updateSkip'])
+
+                downloadButton.clicked.connect(onDownloadUpdate)
+                cancelButton.clicked.connect(onCancelUpdate)
+                skipButton.clicked.connect(onSkipUpdate)
+
+                updateButtonsLayout.addWidget(downloadButton)
+                updateButtonsLayout.addWidget(skipButton)
+                updateButtonsLayout.addWidget(cancelButton)
+
+                updateButtonsFrame.setLayout(updateButtonsLayout)
+
+                updateWindowLayout.addWidget(updateLabel)
+                updateWindowLayout.addWidget(updateButtonsFrame)
+
+                self.updateWindow.setLayout(updateWindowLayout)
+
+                self.updateWindow.setWindowTitle(self.langData['updateWindowTitle'])
+
+                self.updateWindow.setWindowModality(Qt.ApplicationModal)
+
+                self.updateWindow.show()
+
+    def onUpdateFromSettings(self):
+        print('onUpdate')
+        def onSkipUpdate():
+            print('onSkipUpdate')
+            updateSkippedFile = open(self.MCMMPath + '\\skipUpdate', 'w')
+            updateSkippedFile.write(self.responceVersion)
+            updateSkippedFile.close()
+            self.updateWindow.close()
+    
+        def onCancelUpdate():
+            print('Update canceled !')
+            self.updateWindow.close()
+
+        def onDownloadUpdate():
+            print('onDownloadUpdate')
+            print('Downloading update...')
+            updateData = requests.get('https://github.com/M4NIK0/MCModManager/releases/download/' + self.responceVersion + '/MCMM.' + self.responceVersion + '.zip')
+            updateFile = open(self.MCMMPath + '\\WorkDir\\Update.zip', "wb").write(updateData.content)
+            print('Downloaded successfuly !\nDecompressing update file...')
+            if not os.path.exists(self.MCMMPath + '\\WorkDir\\Update'):
+                os.mkdir(self.MCMMPath + '\\WorkDir\\Update')
+            shutil.unpack_archive(self.MCMMPath + '\\WorkDir\\Update.zip', self.MCMMPath + '\\WorkDir\\Update')
+            print('Decompression successful !')
+            print('Running update scipt...')
+            self.settingsPopup.close()
+            self.close()
+            self.updateWindow.close()
+            os.system('python ' + self.MCMMPath + '\\WorkDir\\Update\\Update.py')
+
+        response = requests.get("https://api.github.com/repos/M4NIK0/MCModManager/releases/latest")
+        self.responceVersion = response.json()["name"]
+        if self.responceVersion != 'v' + self.version:
+            print('Update found !')
+            updateSkip = False
+            if not os.path.exists(self.MCMMPath + '\\skipUpdate'):
+                updateSkip = False
+            else:
+                updateSkippedFile = open(self.MCMMPath + '\\skipUpdate', 'r')
+                updateSkipped = updateSkippedFile.read().replace('\n', '')
+                updateSkippedFile.close()
+                if self.responceVersion == updateSkipped:
+                    updateSkip = True
+                    print('Update skipped !')
+            if True:
                 self.updateWindow = QFrame()
                 updateLabel = QLabel()
                 updateWindowLayout = QVBoxLayout()
@@ -703,13 +825,24 @@ class mainWindow(QMainWindow):
                 self.updateWindow.setWindowModality(Qt.ApplicationModal)
 
                 self.updateWindow.show()
-                
-            def onDownload(self):
-                print('onDownloadUpdate')
-            
-            def onSkip(self):
-                print('onSkipUpdate')
+        else:
+            self.updateWindow = QFrame()
+            updateLabel = QLabel()
+            updateWindowLayout = QVBoxLayout()
+            updateButtonsFrame = QFrame()
+            okButton = QPushButton()
+            updateLabel.setText(self.langData['updateNotFound'])
+            okButton.setText(self.langData['okayButton'])
+            okButton.clicked.connect(self.updateWindow.close)
+            updateWindowLayout.addWidget(updateLabel)
+            updateWindowLayout.addWidget(okButton)
+            self.updateWindow.setLayout(updateWindowLayout)
 
+            self.updateWindow.setWindowTitle(self.langData['updateWindowTitle'])
+
+            self.updateWindow.setWindowModality(Qt.ApplicationModal)
+
+            self.updateWindow.show()
 
     def onExit(self):
         print('onExit')
@@ -727,7 +860,7 @@ print('Version loaded')
 optionsFile = open('options.dat', 'r')
 options = optionsFile.readlines()
 optionsFile.close()
-optionsDicKeys = ['lang', 'packLocation', 'backupLocation', 'username']
+optionsDicKeys = ['lang', 'packLocation', 'backupLocation', 'checkForUpdates', 'username']
 optionsDic = {}
 for i in range(len(options)):
     options[i] = options[i].replace('\n', '')
