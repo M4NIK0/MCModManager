@@ -13,6 +13,7 @@ languages|Language
 packsLocation|Packs locations
 packsBackupsLocation|Backup packs location
 settings|Settings
+info|Infos
 MC_MM|MC Mod Manager
 new|New
 locationOptionPacks|Packs location:
@@ -25,14 +26,13 @@ applyButton|Apply
 pathHelpOptions|Leave empty to reset to default location
 pathFolder|Select folder...
 packLoadButton|Load
+packLoadDone|The pack has successfuly loaded !
 packDeleteButton|Delete
 packDisplayModsButton|Display mods
 packInstalledMods|Installed Mods
 packLoader|Loader
 packSureDelete|Are you sure you want to delete the pack ?
 packDeleteWindowTitle|Sure ?
-yes|Yes
-no|No
 packSaveWindowName|Save pack from .minecraft
 packSaveName|Name
 packSaveVersion|Minecraft version
@@ -53,4 +53,20 @@ updateAutoSettings|Check updates at start
 updateCheckSettings|Check for updates
 updateWindowTitle|Updater
 updateNotFound|No update found !
+infoWindowTitle|Infos & changelogs
+infoTitle|Infos about MCMM
+infoParagraph|MCMM is a small software developped by Maniko[It have for goal to simplify the usage of mods and configs without getting to install[any additional software or collecting sensitive data.[I'm making it working on my free time, and post all my work on GitHub here:[https://github.com/M4NIK0/MCModManager/[ [If you have any problem or find any issue, post it on the GitHub i will respond to you[as soon as possible.[ [Thanks to you for using this small software, i really love to make it and it would not be[possible without all my friends and my family.[
+infoGithubLink|Open GitHub
+infoChangelogTitle|Changelog
+infoChangelogParagraph|PlaceHolder for changelogs
+firstRunWindowTitle|Welcome !
+firstRunTextP1|Welcome 
+firstRunTextP2|, to MCMM v
+firstRunTextP3| !
+firstRunText|(I took your name from the Windows session)
+firstRunText2|For now, there are not much features...
+firstRunText3|You can see it in MC Mod Manager > Infos
+firstRunText4|Hope you will enjoy as much as me doing this !
 okayButton|Okay
+yes|Yes
+no|No

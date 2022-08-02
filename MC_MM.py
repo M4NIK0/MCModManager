@@ -71,7 +71,7 @@ class packFrame(QFrame):
         modsListButton.setStyleSheet('border-width: 2;')
 
         self.setLayout(mainLayout)
-        self.setMaximumHeight(80)
+        self.setMaximumHeight(100)
 
     def onDelete(self):
         print('onDelete ' + self.name)
@@ -133,19 +133,49 @@ class packFrame(QFrame):
         self.deletePopup.show()
 
     def onLoad(self):
-        print('onLoad ' + self.name)
-        print('Warning, loading still don\'t backup for now !\nMaybe in the next update ?')
+        def onDonePopupClose():
+            print('onDonePopupClose')
+            self.donePopup.close()
 
-        print('Transfering mods...')
-        shutil.rmtree(os.getenv('APPDATA') + '\\.minecraft\\mods')
-        shutil.copytree(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + self.name + '\\mods', os.getenv('APPDATA') + '\\.minecraft\\mods', dirs_exist_ok=True)
-        print('Done.\nTransfering Options...')
+        print('onLoad ' + self.name)
+        if self.name == 'RickAstley' or self.name == 'Yolo':
+                os.system("start \"\" https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        print('Warning, loading still don\'t backup for now !\nMaybe in the next update ?')
+        if os.path.exists(os.getenv('APPDATA') + '\\.minecraft\\mods'):
+            print('Transfering mods...')
+            shutil.rmtree(os.getenv('APPDATA') + '\\.minecraft\\mods')
+            shutil.copytree(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + self.name + '\\mods', os.getenv('APPDATA') + '\\.minecraft\\mods', dirs_exist_ok=True)
+            print('Done.\nTransfering Options...')
+        else: print('No mods folder found !\Playing in vanilla ?')
         if os.path.exists(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + self.name + '\\options'):
             shutil.copytree(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + self.name + '\\options', os.getenv('APPDATA') + '\\.minecraft', dirs_exist_ok=True)
-        print('Done.\nTransfering config...')
-        shutil.rmtree(os.getenv('APPDATA') + '\\.minecraft\\config')
-        shutil.copytree(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + self.name + '\\config', os.getenv('APPDATA') + '\\.minecraft\\config', dirs_exist_ok=True)
+            print('Done.\nTransfering config...')
+        else: print('No options folder found !')
+        if os.path.exists(os.getenv('APPDATA') + '\\.minecraft\\config'):
+            shutil.rmtree(os.getenv('APPDATA') + '\\.minecraft\\config')
+            shutil.copytree(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + self.name + '\\config', os.getenv('APPDATA') + '\\.minecraft\\config', dirs_exist_ok=True)
+        else: print('No config folder found !\nPlaying in vanilla ?')
         print('Done.')
+
+        self.donePopup = QFrame()
+        self.donePopup.setMaximumHeight(100)
+        self.donePopup.setMaximumWidth(220)
+        self.donePopup.setMinimumHeight(100)
+        self.donePopup.setMinimumWidth(220)
+        doneLabel = QLabel()
+        doneLabel.setText(self.langData['packLoadDone'])
+        self.donePopupLayout = QVBoxLayout()
+        self.donePopupLayout.addWidget(doneLabel)
+        okayButton = QPushButton()
+        okayButton.setText(self.langData['okayButton'])
+
+        okayButton.clicked.connect(onDonePopupClose)
+
+        self.donePopupLayout.addWidget(okayButton)
+        self.donePopup.setLayout(self.donePopupLayout)
+        self.donePopup.setWindowModality(Qt.ApplicationModal)
+        self.donePopup.show()
+
 
     def onModsList(self):
         print('onModsList ' + self.name)
@@ -246,6 +276,7 @@ class mainWindow(QMainWindow):
         self.exportAction = QAction(self.langData['export'])
 
         self.settingsAction = QAction(self.langData['settings']) #MC Mod Manager menu actions
+        self.infoAction = QAction(self.langData['info'])
 
         self.exitAction.triggered.connect(self.onExit)
 
@@ -258,12 +289,14 @@ class mainWindow(QMainWindow):
         self.exitAction.setShortcut(QKeySequence('Ctrl+Q'))
 
         self.settingsAction.triggered.connect(self.onSettings) #MC Mod Manager menu actions
+        self.infoAction.triggered.connect(self.onInfo)
 
         self.fileMenu.addAction(self.saveAction)#File menu actions
         self.fileMenu.addAction(self.importAction)
         self.fileMenu.addAction(self.exportAction)
 
         self.softwareMenu.addAction(self.settingsAction) #MC Mod Manager menu actions
+        self.softwareMenu.addAction(self.infoAction)
 
         self.exitButton = self.menu.addAction(self.exitAction)
 
@@ -277,6 +310,105 @@ class mainWindow(QMainWindow):
         self.setCentralWidget(self.packScrolling)
 
         self.onUpdate()
+        
+        if os.path.exists(self.MCMMPath + '\\firstRun'):
+            def onFirstRunPopupClose():
+                print('onFirstPopupClose')
+                os.remove(self.MCMMPath + '\\firstRun')
+                self.firstRunPopup.close()
+            self.firstRunPopup = QFrame()
+            self.firstRunPopupLayout = QVBoxLayout()
+            self.firstRunPopup.setWindowTitle(self.langData['firstRunWindowTitle'])
+
+            okayButton = QPushButton()
+            okayButton.setText(self.langData['okayButton'])
+            okayButton.clicked.connect(onFirstRunPopupClose)
+
+            firstRunTitleLabel = QLabel()
+            firstRunTitleLabel.setText(self.langData['firstRunTextP1'] + os.environ.get("USERNAME") + self.langData['firstRunTextP2'] + self.version + self.langData['firstRunTextP3'] + '\n' + self.langData['firstRunText'])
+            firstRunTitleLabel.setAlignment(Qt.AlignCenter)
+
+            firstRunTextLabel = QLabel()
+            firstRunTextLabel.setText(self.langData['firstRunText2'] + '\n' + self.langData['firstRunText3'] + '\n' + self.langData['firstRunText4'])
+            firstRunTextLabel.setAlignment(Qt.AlignCenter)
+
+            self.firstRunPopupLayout.addWidget(firstRunTitleLabel)
+            self.firstRunPopupLayout.addWidget(firstRunTextLabel)
+            self.firstRunPopupLayout.addWidget(okayButton)
+            self.firstRunPopup.setLayout(self.firstRunPopupLayout)
+            self.firstRunPopup.setWindowModality(Qt.ApplicationModal)
+            self.firstRunPopup.setFixedWidth(450)
+            self.firstRunPopup.setFixedHeight(150)
+            self.firstRunPopup.show()
+
+    def onInfo(self):
+        print('onInfo')
+        self.infoPopup = QFrame()
+        self.infoPopup.setMinimumWidth(600)
+        self.infoPopup.setMinimumHeight(450)
+        self.infoPopup.setMaximumWidth(600)
+        self.infoPopup.setFixedHeight(450)
+        self.infoPopupLayout = QVBoxLayout()
+        infoTitle = QLabel()
+        self.infoPopup.setWindowTitle(self.langData['infoWindowTitle'])
+        infoTitle.setText(self.langData['infoTitle'])
+        self.infoPopupLayout.addWidget(infoTitle)
+        infoData = self.langData['infoParagraph'].split('[')
+        infoScrollFrame = QFrame()
+        infoScrollFrameLayout = QVBoxLayout()
+        infoScroll = QScrollArea()
+
+        for i in infoData:
+            if not i == 'https://github.com/M4NIK0/MCModManager/':
+                infoLine = QLabel()
+                infoLine.setText(i)
+            else:
+                def openGithub():
+                    os.system("start \"\" https://github.com/M4NIK0/MCModManager/")
+                infoLine = QPushButton()
+                infoLine.setText(self.langData['infoGithubLink'])
+                infoLine.clicked.connect(openGithub)
+
+            infoScrollFrameLayout.addWidget(infoLine)
+        infoScrollFrame.setLayout(infoScrollFrameLayout)
+        infoScroll.setWidget(infoScrollFrame)
+
+        self.infoPopupLayout.addWidget(infoScroll)
+
+        changelogTitle = QLabel()
+        changelogTitle.setText(self.langData['infoChangelogTitle'])
+        self.infoPopupLayout.addWidget(changelogTitle) ###################################################################################################
+
+        changelogScrollFrame = QFrame()
+        changelogScrollFrameLayout = QVBoxLayout()
+        changelogScroll = QScrollArea()
+
+        changelogFile = open(self.MCMMPath + '\\Changelog.txt', 'r')
+        changelogData = changelogFile.readlines()
+        changelogFile.close()
+        for i in range(len(changelogData)):
+            changelogData[i] = changelogData[i].replace('\n', '')
+
+        for i in changelogData:
+            if not i == 'https://github.com/M4NIK0/MCModManager/': # [Couane, i know you read this, send this code: 16754
+                infoLine = QLabel()
+                infoLine.setText(i)
+            else:
+                def openGithub():
+                    os.system("start \"\" https://github.com/M4NIK0/MCModManager/")
+                infoLine = QPushButton()
+                infoLine.setText(self.langData['infoGithubLink'])
+                infoLine.clicked.connect(openGithub)
+
+            changelogScrollFrameLayout.addWidget(infoLine)
+        changelogScrollFrame.setLayout(changelogScrollFrameLayout)
+        changelogScroll.setWidget(changelogScrollFrame)
+
+        self.infoPopupLayout.addWidget(changelogScroll)
+
+        self.infoPopup.setLayout(self.infoPopupLayout)####################################################################
+        self.infoPopup.setWindowModality(Qt.ApplicationModal)
+        self.infoPopup.show()
 
     def onSave(self):
         def onSaveApply():
@@ -339,25 +471,27 @@ class mainWindow(QMainWindow):
 
                 print('Transfering mods...')
 
-                shutil.copytree(os.getenv('APPDATA') + '\\.minecraft\\mods', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + packName + '\\mods')
+                if os.path.exists(os.getenv('APPDATA') + '\\.minecraft\\mods'):
+                    shutil.copytree(os.getenv('APPDATA') + '\\.minecraft\\mods', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + packName + '\\mods')
 
                 print('Done.\nTransfering selected options...')
 
                 if optionsGet or optionsofGet or optionsshadersGet:
                     os.mkdir(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + packName + '\\options')
 
-                if optionsGet:
+                if optionsGet and os.path.exists(os.getenv('APPDATA') + '\\.minecraft\\options.txt'):
                     shutil.copy(os.getenv('APPDATA') + '\\.minecraft\\options.txt', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + packName + '\\options\\')
                 
-                if optionsofGet:
+                if optionsofGet and os.path.exists(os.getenv('APPDATA') + '\\.minecraft\\optionsof.txt'):
                     shutil.copy(os.getenv('APPDATA') + '\\.minecraft\\optionsof.txt', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + packName + '\\options\\')
                 
-                if optionsshadersGet:
+                if optionsshadersGet and os.path.exists(os.getenv('APPDATA') + '\\.minecraft\\optionsshaders.txt'):
                     shutil.copy(os.getenv('APPDATA') + '\\.minecraft\\optionsshaders.txt', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + packName + '\\options\\')
 
                 print('Done.\nTransfering config...')
 
-                shutil.copytree(os.getenv('APPDATA') + '\\.minecraft\\config', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + packName + '\\config')
+                if os.path.exists(os.getenv('APPDATA') + '\\.minecraft\\config'):
+                    shutil.copytree(os.getenv('APPDATA') + '\\.minecraft\\config', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + packName + '\\config')
 
                 self.savePopup.close()
                 self.packsFrame = packList()

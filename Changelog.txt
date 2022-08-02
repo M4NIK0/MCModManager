@@ -1,0 +1,26 @@
+MCMM v0.9.5 changelog !
+
+bug fixes:
+- Bug fix when trying to save pack without any mods or config folder (for vanilla only users)
+- Deletion title not showing up (the "Sure ?")
+- Small text line in settings popup breaking everything
+- Various optimizations (removed useless code and stuff)
+
+features:
+- Save packs without any fear and bug (for now)
+  - Added loader entry
+  - Increased stability when some files/folders are missing
+
+- Load packs (no backup for now, be careful !)
+  - Increased stability when some files/folders are missing
+
+- Auto updater (if activated in settings)
+  - Increased stability
+  - Added an option to force update if skipped
+
+- List all packs, their versions, and loaders
+
+If you find any bug or feature, contact me here:
+https://github.com/M4NIK0/MCModManager/
+
+Thanks for reading, se you next time for MCMM v0.9.6 !
