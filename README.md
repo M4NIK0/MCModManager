@@ -14,8 +14,13 @@ It should be easy to use:
   The last textbox is for others options, if you have not only options, optionsshaders and optionsof, just type their name and separate by ","
 - Load a pack from it's box (by cliking Load)
   Warning ! for now, i didn't implemented the backup feature, it will discard all your options and configs when you do it, so be careful !
+- Import a pack from a .mcmp file (which is basically a .zip with a different name, to ensure it's a pack and not a random zip)
 - Delete a pack from it's box (There is a small message box to confirm, it's not an action that you can undo, be careful)
+
+The export feature will come in the next update !
+It will make the final feature (for now) to get used and should pass MCMM in v1.0 if i don't find any bug.
+Don't forget to read the changelog to see every features i can add from an update to another !
 
 Thanks for reading, see you soon for the next update !
 
-v0.9.5 - Maniko
+v0.9.6 - Maniko
