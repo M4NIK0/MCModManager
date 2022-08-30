@@ -15,6 +15,8 @@ packsBackupsLocation|Backup packs location
 settings|Settings
 info|Infos
 MC_MM|MC Mod Manager
+MC_MM_Busy|MCMM is busy, please wait while it finishes...
+MC_MM_BusyWindowTitle|Please wait...
 new|New
 locationOptionPacks|Packs location:
 locationOptionBackups|Backups location:
@@ -67,6 +69,10 @@ firstRunText|(I took your name from the Windows session)
 firstRunText2|For now, there are not much features...
 firstRunText3|You can see it in MC Mod Manager > Infos
 firstRunText4|Hope you will enjoy as much as me doing this !
+importWindowTitle|Import from file
+importLocationLabel|File location
+importNameLabel|Name
+importLoadButton|Import
 okayButton|Okay
 yes|Yes
 no|No

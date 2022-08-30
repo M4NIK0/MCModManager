@@ -17,31 +17,6 @@ print('MC_MM.py updated')
 shutil.copyfile(MCMMPath + '\\WorkDir\\Update\\Version', MCMMPath + '\\Version', follow_symlinks=True)
 print('Version file updated')
 
-oldOptionsFile = open(MCMMPath + '\\options.dat', 'r')
-oldOptions = oldOptionsFile.readlines()
-oldOptionsFile.close()
-for i in range(len(oldOptions)):
-    oldOptions[i] = oldOptions[i].replace('\n', '')
-    if i == 3:
-        oldOptions[i] = 'checkForUpdates = True'
-oldOptions.append('username = user')
-toWrite = ''
-for i in oldOptions:
-    toWrite += i + '\n'
-newOptionsFile = open(MCMMPath + '\\options.dat', 'w')
-newOptionsFile.write(toWrite)
-newOptionsFile.close()
-print('Added new option')
-
-packsLocation = ''
-for i in oldOptions:
-    if 'packLocation = ' in i:
-        packsLocation = i.replace('packLocation = ', '').replace('MC_MM_Install', MCMMPath)
-shutil.copytree(MCMMPath + '\\WorkDir\\Update\\Packs\\Demo MCMM v0.9.5\\', packsLocation + '\\Demo MCMM v0.9.5')
-packsDatFile = open(packsLocation + '\\Packs.dat', 'a')
-packsDatFile.write('Demo MCMM v0.9.5\n')
-packsDatFile.close()
-print("Added new example config")
 
 firstRunFile = open(MCMMPath + '\\firstRun', 'w')
 firstRunFile.write('Install success !')

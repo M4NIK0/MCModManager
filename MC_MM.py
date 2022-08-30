@@ -7,6 +7,7 @@ from PIL import Image, ImageQt
 class packFrame(QFrame):
     def __init__(self):
         super().__init__()
+        self.waitFrame = QFrame()
         self.name = 'Default_Name'
         self.loader = 'Default_Loader'
         self.mods = ['Default', 'Mods', 'List']
@@ -79,7 +80,9 @@ class packFrame(QFrame):
         def onYes():
             print('Deleting pack ' + self.name)
             print(self.packsPath)
+            self.waitFrame.show()
             shutil.rmtree(self.packsPath.replace('MC_MM_Install', self.MCMMPath) + '\\' + self.name)
+            self.waitFrame.close()
             print('Pack files removed')
             
             packsDat = open(self.packsPath.replace('MC_MM_Install', self.MCMMPath) + '\\Packs.dat', 'r')
@@ -200,6 +203,7 @@ class packFrame(QFrame):
 class packList(QFrame):
     def __init__(self):
         super().__init__()
+        self.waitFrame = QFrame()
         self.langData = {}
         self.settingsData = {}
         self.MCMMPath = ''
@@ -221,6 +225,7 @@ class packList(QFrame):
                     packRawData[j] = packRawData[j].replace('\n', '').split('|')
                     dicData[packRawData[j][0]] = packRawData[j][1]
                 packFramed = packFrame()
+                packFramed.waitFrame = self.waitFrame
                 packFramed.langData = self.langData
                 packFramed.name = packList[i]
                 packFramed.loader = dicData['Loader']
@@ -258,6 +263,20 @@ class mainWindow(QMainWindow):
         if os.path.exists(self.MCMMPath + '\\Update.py'):
             os.remove(self.MCMMPath + '\\Update.py')
             print('Removed Update.py (it\'s not an update running !)')
+
+        self.waitFrame = QFrame() #Frame in case MCMM is busy a long time
+        waitFrameLayout = QHBoxLayout()
+        waitFrameText = QLabel()
+            
+        waitFrameText.setText(self.langData['MC_MM_Busy'])
+        waitFrameLayout.addWidget(waitFrameText)
+        self.waitFrame.setLayout(waitFrameLayout)
+        self.waitFrame.setFixedHeight(10)
+        self.waitFrame.setFixedWidth(350)
+
+        self.waitFrame.setWindowTitle(self.langData['MC_MM_BusyWindowTitle'])
+
+        self.waitFrame.setWindowModality(Qt.ApplicationModal)
 
         self.settingsPopup = QMainWindow() #Creating settings window
         self.settingsPopup.setWindowTitle(self.langData['settingsWindow'])
@@ -301,7 +320,7 @@ class mainWindow(QMainWindow):
         self.exitButton = self.menu.addAction(self.exitAction)
 
         self.packsFrame = packList()
-        self.packsFrame.settingsData, self.packsFrame.langData, self.packsFrame.MCMMPath = self.settingsData, self.langData, self.MCMMPath
+        self.packsFrame.waitFrame, self.packsFrame.settingsData, self.packsFrame.langData, self.packsFrame.MCMMPath = self.waitFrame, self.settingsData, self.langData, self.MCMMPath
         self.packsFrame.onExplore()
 
         self.packsFrame.setMinimumWidth(700)
@@ -311,6 +330,7 @@ class mainWindow(QMainWindow):
 
         self.onUpdate()
         
+
         if os.path.exists(self.MCMMPath + '\\firstRun'):
             def onFirstRunPopupClose():
                 print('onFirstPopupClose')
@@ -377,7 +397,7 @@ class mainWindow(QMainWindow):
 
         changelogTitle = QLabel()
         changelogTitle.setText(self.langData['infoChangelogTitle'])
-        self.infoPopupLayout.addWidget(changelogTitle) ###################################################################################################
+        self.infoPopupLayout.addWidget(changelogTitle)
 
         changelogScrollFrame = QFrame()
         changelogScrollFrameLayout = QVBoxLayout()
@@ -406,7 +426,7 @@ class mainWindow(QMainWindow):
 
         self.infoPopupLayout.addWidget(changelogScroll)
 
-        self.infoPopup.setLayout(self.infoPopupLayout)####################################################################
+        self.infoPopup.setLayout(self.infoPopupLayout)
         self.infoPopup.setWindowModality(Qt.ApplicationModal)
         self.infoPopup.show()
 
@@ -495,7 +515,7 @@ class mainWindow(QMainWindow):
 
                 self.savePopup.close()
                 self.packsFrame = packList()
-                self.packsFrame.settingsData, self.packsFrame.langData, self.packsFrame.MCMMPath = self.settingsData, self.langData, self.MCMMPath
+                self.waitFrame, self.packsFrame.settingsData, self.packsFrame.langData, self.packsFrame.MCMMPath = self.waitFrame, self.settingsData, self.langData, self.MCMMPath
                 self.packsFrame.onExplore()
                 self.packsFrame.setMinimumWidth(700)
                 self.packScrolling.setWidget(self.packsFrame)
@@ -798,7 +818,118 @@ class mainWindow(QMainWindow):
             self.locationBackupsTextZone.setText(dir)
 
     def onImport(self):
+        def importApply():
+            packToImport = self.importLocationText.text()
+            packsDatFile = open(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\Packs.dat', 'r')
+            packsFile = packsDatFile.read()
+            packsDatFile.close()
+            if self.importNameText.text() == '' or not os.path.exists(packToImport):
+                print('Cannot import a pack without a name !')
+            elif self.importNameText.text() in packsFile:
+                print('Cannot import a pack with a duplicated name !')
+            else:
+                print('Verifying archive at ' + packToImport + "(Copying and unpacking in WorkDir)")
+
+                self.waitFrame.show()
+
+                shutil.copyfile(packToImport, self.MCMMPath + '\\WorkDir\\Pack.zip')
+                shutil.unpack_archive(self.MCMMPath + '\\WorkDir\\Pack.zip', self.MCMMPath + '\\WorkDir\\Pack')
+
+                self.waitFrame.close()
+                print("Archive copied and unpacked !")
+                print('Looking for Info.dat...')
+                if os.path.exists(self.MCMMPath + '\\WorkDir\\Pack\\Info.dat'):
+                    print('File found !\nMoving files in' + self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath))
+                    self.waitFrame.show()
+                    shutil.move(self.MCMMPath + "\\WorkDir\\Pack", self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + self.importNameText.text())
+                    os.remove(self.MCMMPath + '\\WorkDir\\Pack.zip')
+                    self.waitFrame.close()
+                    print('Files moved !\nAdding pack in configs...')
+
+                    packsDatFile = open(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\Packs.dat', 'w')
+                    packsDatFile.write(packsFile + self.importNameText.text() + '\n')
+                    packsDatFile.close()
+
+                    self.packsFrame = packList()
+                    self.waitFrame, self.packsFrame.settingsData, self.packsFrame.langData, self.packsFrame.MCMMPath = self.waitFrame, self.settingsData, self.langData, self.MCMMPath
+                    self.packsFrame.onExplore()
+
+                    self.packsFrame.setMinimumWidth(700)
+                    self.packScrolling.setWidget(self.packsFrame)
+                    self.importWindow.close()
+                else:
+                    print('File not found !\nCannot import a pack without any information !')
+
+
+        def importCancel():
+            print('Import cancelled')
+            self.importWindow.close()
+
+        def browseFile():
+            print('Browsing file...')
+            file = QFileDialog.getOpenFileName(self,'Single File', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath),'*.mcmp')
+            file = file[0]
+            if file == "":
+                print('Nothing selected !')
+            else:
+                print('File selected: ' + file)
+                self.importLocationText.setText(file)
+
         print('onImport')
+        self.importWindow = QFrame()
+        self.importWindow.layout = QVBoxLayout()
+
+        locationFrame = QFrame()
+        locationFrameLayout = QHBoxLayout()
+        locationFrameLabel = QLabel()
+        locationBrowseButton = QPushButton()
+        self.importLocationText = QLineEdit()
+
+        nameFrame = QFrame()
+        nameFrameLayout = QHBoxLayout()
+        nameFrameLabel = QLabel()
+        self.importNameText = QLineEdit()
+
+        buttonsFrame = QFrame()
+        buttonsFrameLayout = QHBoxLayout()
+        cancelButton = QPushButton()
+        loadButton = QPushButton()
+
+        locationBrowseButton.clicked.connect(browseFile)
+        loadButton.clicked.connect(importApply)
+        cancelButton.clicked.connect(importCancel)
+
+        locationFrameLabel.setText(self.langData['importLocationLabel'])
+        locationBrowseButton.setText(self.langData['browseText'])
+
+        nameFrameLabel.setText(self.langData['importNameLabel'])
+
+        cancelButton.setText(self.langData['cancelButton'])
+        loadButton.setText(self.langData['importLoadButton'])
+
+        locationFrameLayout.addWidget(locationFrameLabel)
+        locationFrameLayout.addWidget(self.importLocationText)
+        locationFrameLayout.addWidget(locationBrowseButton)
+        locationFrame.setLayout(locationFrameLayout)
+
+        nameFrameLayout.addWidget(nameFrameLabel)
+        nameFrameLayout.addWidget(self.importNameText)
+        nameFrame.setLayout(nameFrameLayout)
+
+        buttonsFrameLayout.addWidget(cancelButton)
+        buttonsFrameLayout.addWidget(loadButton)
+        buttonsFrame.setLayout(buttonsFrameLayout)
+
+        self.importWindow.layout.addWidget(locationFrame)
+        self.importWindow.layout.addWidget(nameFrame)
+        self.importWindow.layout.addWidget(buttonsFrame)
+        self.importWindow.setLayout(self.importWindow.layout)
+
+        self.importWindow.setWindowTitle(self.langData['importWindowTitle'])
+        self.importWindow.setWindowModality(Qt.ApplicationModal)
+        self.importWindow.setFixedWidth(700)
+        self.importWindow.setFixedHeight(150)
+        self.importWindow.show()
 
     def onExport(self):
         print('onExport')
@@ -956,7 +1087,7 @@ class mainWindow(QMainWindow):
 
                 self.updateWindow.setLayout(updateWindowLayout)
 
-                self.updateWindow.setWindowModality(Qt.ApplicationModal)
+                
 
                 self.updateWindow.show()
         else:
