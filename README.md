@@ -1,8 +1,9 @@
 MC Mod Manager is a free and open-source project, it permits (and will permit for some features)
 profiles gestion (options, mods, configs...) without any install, with it's portable capability.
 
-Then, i didn't reached v1.0 for now, and it means that every update is important, to get the most stable and useful version, since only a few features are up for now.
-To finish the warnings (most of it):
+It finally reached the v1.0 release !
+So there are some changes made inside, read it carefuly !
+
 This program is ONLY supported for Python 3.8 and 3.9 ONLY, i didn't test it on others...
 I use PyQt5, os, random, shutil, sys and time, for now so you should install these (if not alredy done) before running my software, even if i alredy made a small code to install these from the run.bat.
 
@@ -14,7 +15,9 @@ It should be easy to use:
   The last textbox is for others options, if you have not only options, optionsshaders and optionsof, just type their name and separate by ","
 - Load a pack from it's box (by cliking Load)
   Warning ! for now, i didn't implemented the backup feature, it will discard all your options and configs when you do it, so be careful !
-- Import a pack from a .mcmp file (which is basically a .zip with a different name, to ensure it's a pack and not a random zip)
+- Import a pack from a .mcmp file (File > Import) (It is basically a .zip with a different name, to ensure it's a pack and not a random zip)
+  Name it as you want, it imports all the stuff inside of the archive to automatically get usable right after
+- Export a pack to a .mcmp file for your friends to play with them (File > Export)
 - Delete a pack from it's box (There is a small message box to confirm, it's not an action that you can undo, be careful)
 
 The export feature will come in the next update !
@@ -23,4 +26,4 @@ Don't forget to read the changelog to see every features i can add from an updat
 
 Thanks for reading, see you soon for the next update !
 
-v0.9.6 - Maniko
+v1.0- Maniko
