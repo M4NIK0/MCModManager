@@ -25,6 +25,7 @@ settingsWindow|Settings
 mainWindow|Minecraft Mod Manager
 cancelButton|Cancel
 applyButton|Apply
+mcmpArchive|Modpack archive (*.mcmp)
 pathHelpOptions|Leave empty to reset to default location
 pathFolder|Select folder...
 packLoadButton|Load
@@ -57,8 +58,9 @@ updateWindowTitle|Updater
 updateNotFound|No update found !
 infoWindowTitle|Infos & changelogs
 infoTitle|Infos about MCMM
-infoParagraph|MCMM is a small software developped by Maniko[It have for goal to simplify the usage of mods and configs without getting to install[any additional software or collecting sensitive data.[I'm making it working on my free time, and post all my work on GitHub here:[https://github.com/M4NIK0/MCModManager/[ [If you have any problem or find any issue, post it on the GitHub i will respond to you[as soon as possible.[ [Thanks to you for using this small software, i really love to make it and it would not be[possible without all my friends and my family.[
+infoParagraph|MCMM is a small software developped by Maniko[It have for goal to simplify the usage of mods and configs without getting to install[any additional software or collecting sensitive data.[I'm making it working on my free time, and post all my work on GitHub here:[https://github.com/M4NIK0/MCModManager/[ [If you have any problem or find any issue, post it on the GitHub i will respond to you[as soon as possible.[You can come on Discord too ! [https://discord.gg/BEeFk8GQgm[ [Thanks to you for using this small software, i really love to make it and it would not be[possible without all my friends and my family.[
 infoGithubLink|Open GitHub
+infoDiscordLink|Open Discord
 infoChangelogTitle|Changelog
 infoChangelogParagraph|PlaceHolder for changelogs
 firstRunWindowTitle|Welcome !
@@ -73,6 +75,7 @@ importWindowTitle|Import from file
 importLocationLabel|File location
 importNameLabel|Name
 importLoadButton|Import
+exportButton|Export...
 okayButton|Okay
 yes|Yes
 no|No

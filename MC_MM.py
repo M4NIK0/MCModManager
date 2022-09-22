@@ -144,7 +144,7 @@ class packFrame(QFrame):
         if self.name == 'RickAstley' or self.name == 'Yolo':
                 os.system("start \"\" https://www.youtube.com/watch?v=dQw4w9WgXcQ")
         print('Warning, loading still don\'t backup for now !\nMaybe in the next update ?')
-        if os.path.exists(os.getenv('APPDATA') + '\\.minecraft\\mods'):
+        if os.path.exists(os.getenv('APPDATA') + '\\.minecraft\\mods') and os.path.exists(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + self.name + '\\mods', os.getenv('APPDATA') + '\\.minecraft\\mods'):
             print('Transfering mods...')
             shutil.rmtree(os.getenv('APPDATA') + '\\.minecraft\\mods')
             shutil.copytree(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + self.name + '\\mods', os.getenv('APPDATA') + '\\.minecraft\\mods', dirs_exist_ok=True)
@@ -210,6 +210,16 @@ class packList(QFrame):
         self.layout = QVBoxLayout()
 
     def onExplore(self):
+        waitFrameLayout = QHBoxLayout()
+        waitFrameText = QLabel()
+        self.waitFrame = QFrame() #Frame in case MCMM is busy a long time
+
+        waitFrameText.setText(self.langData['MC_MM_Busy'])
+        waitFrameLayout.addWidget(waitFrameText)
+        self.waitFrame.setLayout(waitFrameLayout)
+        self.waitFrame.setFixedHeight(10)
+        self.waitFrame.setFixedWidth(350)
+
         dataRead = open(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\Packs.dat', 'r')
         packList = dataRead.readlines()
         dataRead.close()
@@ -264,10 +274,11 @@ class mainWindow(QMainWindow):
             os.remove(self.MCMMPath + '\\Update.py')
             print('Removed Update.py (it\'s not an update running !)')
 
-        self.waitFrame = QFrame() #Frame in case MCMM is busy a long time
+        
         waitFrameLayout = QHBoxLayout()
         waitFrameText = QLabel()
-            
+        self.waitFrame = QFrame() #Frame in case MCMM is busy a long time
+
         waitFrameText.setText(self.langData['MC_MM_Busy'])
         waitFrameLayout.addWidget(waitFrameText)
         self.waitFrame.setLayout(waitFrameLayout)
@@ -379,15 +390,23 @@ class mainWindow(QMainWindow):
         infoScroll = QScrollArea()
 
         for i in infoData:
-            if not i == 'https://github.com/M4NIK0/MCModManager/':
+            if (i == 'https://github.com/M4NIK0/MCModManager/' or i == 'https://discord.gg/BEeFk8GQgm'):
+                if i == 'https://github.com/M4NIK0/MCModManager/':
+                    def openGithub():
+                        os.system("start \"\" https://github.com/M4NIK0/MCModManager/")
+                    infoLine = QPushButton()
+                    infoLine.setText(self.langData['infoGithubLink'])
+                    infoLine.clicked.connect(openGithub)
+                if i == 'https://discord.gg/BEeFk8GQgm':
+                    def openDiscord():
+                        os.system("start \"\" https://discord.gg/BEeFk8GQgm")
+                    infoLine = QPushButton()
+                    infoLine.setText(self.langData['infoDiscordLink'])
+                    infoLine.clicked.connect(openDiscord)
+                
+            else:
                 infoLine = QLabel()
                 infoLine.setText(i)
-            else:
-                def openGithub():
-                    os.system("start \"\" https://github.com/M4NIK0/MCModManager/")
-                infoLine = QPushButton()
-                infoLine.setText(self.langData['infoGithubLink'])
-                infoLine.clicked.connect(openGithub)
 
             infoScrollFrameLayout.addWidget(infoLine)
         infoScrollFrame.setLayout(infoScrollFrameLayout)
@@ -410,16 +429,22 @@ class mainWindow(QMainWindow):
             changelogData[i] = changelogData[i].replace('\n', '')
 
         for i in changelogData:
-            if not i == 'https://github.com/M4NIK0/MCModManager/': # [Couane, i know you read this, send this code: 16754
+            if (i == 'https://github.com/M4NIK0/MCModManager/' or i == 'https://discord.gg/BEeFk8GQgm'):
+                if i == 'https://github.com/M4NIK0/MCModManager/':
+                    def openGithub():
+                        os.system("start \"\" https://github.com/M4NIK0/MCModManager/")
+                    infoLine = QPushButton()
+                    infoLine.setText(self.langData['infoGithubLink'])
+                    infoLine.clicked.connect(openGithub)
+                if i == 'https://discord.gg/BEeFk8GQgm':
+                    def openDiscord():
+                        os.system("start \"\" https://discord.gg/BEeFk8GQgm")
+                    infoLine = QPushButton()
+                    infoLine.setText(self.langData['infoDiscordLink'])
+                    infoLine.clicked.connect(openDiscord)
+            else:
                 infoLine = QLabel()
                 infoLine.setText(i)
-            else:
-                def openGithub():
-                    os.system("start \"\" https://github.com/M4NIK0/MCModManager/")
-                infoLine = QPushButton()
-                infoLine.setText(self.langData['infoGithubLink'])
-                infoLine.clicked.connect(openGithub)
-
             changelogScrollFrameLayout.addWidget(infoLine)
         changelogScrollFrame.setLayout(changelogScrollFrameLayout)
         changelogScroll.setWidget(changelogScrollFrame)
@@ -489,6 +514,8 @@ class mainWindow(QMainWindow):
                 packsDatFile.write(packsFile + packName + '\n')
                 packsDatFile.close()
 
+                self.waitFrame.show()
+
                 print('Transfering mods...')
 
                 if os.path.exists(os.getenv('APPDATA') + '\\.minecraft\\mods'):
@@ -509,7 +536,7 @@ class mainWindow(QMainWindow):
                     shutil.copy(os.getenv('APPDATA') + '\\.minecraft\\optionsshaders.txt', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + packName + '\\options\\')
 
                 print('Done.\nTransfering config...')
-
+ 
                 if os.path.exists(os.getenv('APPDATA') + '\\.minecraft\\config'):
                     shutil.copytree(os.getenv('APPDATA') + '\\.minecraft\\config', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + packName + '\\config')
 
@@ -519,6 +546,8 @@ class mainWindow(QMainWindow):
                 self.packsFrame.onExplore()
                 self.packsFrame.setMinimumWidth(700)
                 self.packScrolling.setWidget(self.packsFrame)
+
+                self.waitFrame.close()
 
         print('onSave')
         self.savePopup = QFrame()
@@ -620,9 +649,8 @@ class mainWindow(QMainWindow):
     def onSettings(self):
         print('onSettings')
         settingsPopupMainFrame = QFrame()
-        self.settingsPopup.resize(500, 260)
-        self.settingsPopup.setMaximumSize(500, 260)
-        self.settingsPopup.setMinimumSize(500, 260)
+        self.settingsPopup.setFixedWidth(550)
+        self.settingsPopup.setFixedHeight(300)
 
         self.settingsPopup.layout = QVBoxLayout()
 
@@ -867,7 +895,7 @@ class mainWindow(QMainWindow):
 
         def browseFile():
             print('Browsing file...')
-            file = QFileDialog.getOpenFileName(self,'Single File', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath),'*.mcmp')
+            file = QFileDialog.getOpenFileName(self,'Single File', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath), self.langData['mcmpArchive'])
             file = file[0]
             if file == "":
                 print('Nothing selected !')
@@ -928,11 +956,61 @@ class mainWindow(QMainWindow):
         self.importWindow.setWindowTitle(self.langData['importWindowTitle'])
         self.importWindow.setWindowModality(Qt.ApplicationModal)
         self.importWindow.setFixedWidth(700)
-        self.importWindow.setFixedHeight(150)
+        self.importWindow.setFixedHeight(200)
         self.importWindow.show()
 
     def onExport(self):
         print('onExport')
+        def cancelExport():
+            print('Pack export canceled !')
+            self.exportWindow.close()
+        def exportPack():
+            print('onExportPack')
+            if packSelection.currentIndex() == 0:
+                print('No pack selected !')
+            else:
+                self.exportWindow.close()
+                print(packSelection.currentText(), 'selected !')
+                file = QFileDialog.getSaveFileName(self, self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath),'', self.langData['mcmpArchive'])
+                print('Saving file at', file)
+                self.waitFrame.show()
+                print('Compressing file from', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + packSelection.currentText(), 'to', self.MCMMPath + '\\WorkDir')
+                shutil.make_archive(self.MCMMPath + '\\WorkDir\\Pack', 'zip', self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + packSelection.currentText())
+                file = file[0]
+                if not '.mcmp' in file:
+                    file += '.mcmp'
+                shutil.move(self.MCMMPath + '\\WorkDir\\Pack.zip', file)
+                self.waitFrame.close()
+                print('Pack export done !')
+        dataRead = open(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\Packs.dat', 'r')
+        packList = dataRead.readlines()
+        for i in range(len(packList)):
+            packList[i] = packList[i].replace('\n', '')
+        dataRead.close()
+        print(packList)
+        self.exportWindow = QFrame()
+        exportWindowLayout = QHBoxLayout()
+        packSelection = QComboBox()
+        packSelection.addItem('Select a pack')
+        for i in packList:
+            packSelection.addItem(i)
+        exportButton = QPushButton()
+        exportButton.setText(self.langData['exportButton'])
+        exportButton.clicked.connect(exportPack)
+        cancelButton = QPushButton()
+        cancelButton.setText(self.langData['cancelButton'])
+        cancelButton.clicked.connect(cancelExport)
+        exportWindowLayout.addWidget(packSelection)
+        exportWindowLayout.addWidget(exportButton)
+        exportWindowLayout.addWidget(cancelButton)
+        self.exportWindow.setLayout(exportWindowLayout)
+        self.exportWindow.setWindowTitle(self.langData['updateWindowTitle'])
+        self.exportWindow.setWindowModality(Qt.ApplicationModal)
+        self.exportWindow.setFixedHeight(60)
+        self.exportWindow.setFixedWidth(550)
+        self.exportWindow.show()
+
+
 
     def onLaunchMC(self):
         print('onLaunchMC')

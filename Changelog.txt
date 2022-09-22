@@ -1,29 +1,40 @@
-MCMM v0.9.6 changelog !
+MCMM v1.0 changelog !
 
 bug fixes:
-- I don't know, just optimizations...
-(no any bug found within my code for now)
+- Fixed bug when loading a pack without any mods (like playing in vanilla) causing crash
+- Missing "please wait" at various places (when loading or deleting packs...)
+- Fixed settings window not sized correctly (was too short to see anything)
+- I don't remember, just optimizations and stuff
 
-features:
+main features:
 - Save packs without any fear and bug (for now)
+ - Give it a name, a version, a mods list (if you want to not get lost in your own library) and a modloader
+   (if used, if not default is vanilla)
 
 - Load packs (no backup for now, be careful !)
+ - Load a pack from your library, putting your mods, configs and options together inside of .minecraft !
 
 - Auto updater (if activated in settings)
+ - Just looks for update at startup (if not disabled in settings)
+ - Can update from the settings window, works like the auto updater from startup.
 
-- Added Import feature !
- - Load a pack from a '.mcmp' (basically a zip file)
- - Currently stable for now (I hope)
+- Import
+ - Load a pack from a '.mcmp' (basically a zip file) and give it a name.
 
-- List all packs, their versions, and loaders
+- Finally added the Export feature !
+ - Export a pack from your library
+ - Give it a name (to the archive), a location and pouf ! (also, wait the moment it tells you it's done)
 
-The importing feature will be useful when you are going to get the export feature...
-Hope you still enjoy it for now !
+To finish, i added a demo pack to celebrate the release of v1.0 !
 
-If you find any bug or feature, contact me here:
+I will now concentrate on correcting bugs, and maybe features if there is something interesting
+that comes up !
+In the next update, i will work on user-friendly usage, as custom .minecraft location 
+
+If you find any bug or feature that can be added, contact me here:
 https://github.com/M4NIK0/MCModManager/
+https://discord.gg/BEeFk8GQgm
 
-Thanks for reading, se you next time for MCMM v0.9.7 !
-Even if it's short, a few features are going to come in the next update !
+Thanks for reading, se you next time for MCMM v1.1 !
 
 - Maniko
