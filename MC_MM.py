@@ -144,7 +144,7 @@ class packFrame(QFrame):
         if self.name == 'RickAstley' or self.name == 'Yolo':
                 os.system("start \"\" https://www.youtube.com/watch?v=dQw4w9WgXcQ")
         print('Warning, loading still don\'t backup for now !\nMaybe in the next update ?')
-        if os.path.exists(os.getenv('APPDATA') + '\\.minecraft\\mods') and os.path.exists(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + self.name + '\\mods', os.getenv('APPDATA') + '\\.minecraft\\mods'):
+        if os.path.exists(os.getenv('APPDATA') + '\\.minecraft\\mods') and os.path.exists(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + self.name + '\\mods'):
             print('Transfering mods...')
             shutil.rmtree(os.getenv('APPDATA') + '\\.minecraft\\mods')
             shutil.copytree(self.settingsData['packLocation'].replace('MC_MM_Install', self.MCMMPath) + '\\' + self.name + '\\mods', os.getenv('APPDATA') + '\\.minecraft\\mods', dirs_exist_ok=True)
