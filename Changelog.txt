@@ -1,10 +1,7 @@
-MCMM v1.0 changelog !
+MCMM v1.01 changelog !
 
 bug fixes:
-- Fixed bug when loading a pack without any mods (like playing in vanilla) causing crash
-- Missing "please wait" at various places (when loading or deleting packs...)
-- Fixed settings window not sized correctly (was too short to see anything)
-- I don't remember, just optimizations and stuff
+- Fixed crash when loading a modpack caused by a typo -_-
 
 main features:
 - Save packs without any fear and bug (for now)
@@ -24,12 +21,6 @@ main features:
 - Finally added the Export feature !
  - Export a pack from your library
  - Give it a name (to the archive), a location and pouf ! (also, wait the moment it tells you it's done)
-
-To finish, i added a demo pack to celebrate the release of v1.0 !
-
-I will now concentrate on correcting bugs, and maybe features if there is something interesting
-that comes up !
-In the next update, i will work on user-friendly usage, as custom .minecraft location 
 
 If you find any bug or feature that can be added, contact me here:
 https://github.com/M4NIK0/MCModManager/
